@@ -34,8 +34,10 @@ class Govt extends AbstractProvider
             ->addDates($payload['start_date'])
             ->addDates($payload['end_date']);
 
-        foreach ($payload['locations'] as $location) {
-            $job->addLocations($location);
+        if (is_array($payload['locations'])) {
+            foreach ($payload['locations'] as $location) {
+                $job->addLocations($location);
+            }
         }
 
         return $job;
@@ -68,7 +70,7 @@ class Govt extends AbstractProvider
      */
     public function getKeyword()
     {
-        $keyword = ($this->keyword ?: null).' '.($this->getLocation() ?: null);
+        $keyword = ($this->keyword ? $this->keyword.' ' : null).($this->getLocation() ?: null);
 
         if ($keyword) {
             return $keyword;
@@ -100,10 +102,12 @@ class Govt extends AbstractProvider
      */
     public function getFrom()
     {
-        $from = ($this->page - 1) * $this->count;
+        if($this->page) {
+            $from = ($this->page - 1) * $this->count;
 
-        if ($from) {
-            return $from;
+            if ($from) {
+                return $from;
+            }
         }
 
         return null;

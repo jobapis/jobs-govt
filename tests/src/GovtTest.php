@@ -28,10 +28,10 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     {
         $path = $this->client->getListingsPath();
 
+        $this->assertEmpty($path);
         $this->assertEquals(null, $path);
     }
 
-/*
     public function testItWillProvideEmptyParameters()
     {
         $parameters = $this->client->getParameters();
@@ -40,162 +40,103 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($parameters));
     }
 
-    public function testUrlIncludesHighlightWhenProvided()
-    {
-        $param = 'highlight='.$this->params['highlight'];
-
-        $url = $this->client->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesHighlightWhenNotProvided()
-    {
-        $param = 'highlight=';
-
-        $url = $this->client->setHighlight(null)->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
-    public function testUrlIncludesKeywordWhenProvided()
+    public function testUrlIncludesKeywordWhenKeywordProvided()
     {
         $keyword = uniqid().' '.uniqid();
-        $param = 'q='.urlencode($keyword);
+        $param = 'query='.urlencode($keyword);
 
         $url = $this->client->setKeyword($keyword)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlNotIncludesKeywordWhenNotProvided()
-    {
-        $param = 'q=';
-
-        $url = $this->client->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
-    public function testUrlIncludesLocationWhenCityAndStateProvided()
+    public function testUrlIncludesKeywordWhenCityAndStateProvided()
     {
         $city = uniqid();
         $state = uniqid();
-        $param = 'l='.urlencode($city.', '.$state);
+        $param = 'query='.urlencode($city.', '.$state);
 
         $url = $this->client->setCity($city)->setState($state)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlIncludesLocationWhenCityProvided()
+    public function testUrlIncludesKeywordWhenCityProvided()
     {
         $city = uniqid();
-        $param = 'l='.urlencode($city);
+        $param = 'query='.urlencode($city);
 
         $url = $this->client->setCity($city)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlIncludesLocationWhenStateProvided()
+    public function testUrlIncludesKeywordWhenStateProvided()
     {
         $state = uniqid();
-        $param = 'l='.urlencode($state);
+        $param = 'query='.urlencode($state);
 
         $url = $this->client->setState($state)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlNotIncludesLocationWhenNotProvided()
+    public function testUrlNotIncludesKeywordWhenNotProvided()
     {
-        $param = 'l=';
+        $param = 'query=';
 
         $url = $this->client->getUrl();
 
         $this->assertNotContains($param, $url);
     }
 
-    public function testUrlIncludesLimitWhenProvided()
+    public function testUrlIncludesSizeWhenProvided()
     {
-        $limit = uniqid();
-        $param = 'limit='.$limit;
+        $size = uniqid();
+        $param = 'size='.$size;
 
-        $url = $this->client->setCount($limit)->getUrl();
+        $url = $this->client->setCount($size)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlNotIncludesLimitWhenNotProvided()
+    public function testUrlNotIncludesSizeWhenNotProvided()
     {
-        $param = 'limit=';
+        $param = 'size=';
 
         $url = $this->client->setCount(null)->getUrl();
 
         $this->assertNotContains($param, $url);
     }
 
-    public function testUrlIncludesPublisherWhenProvided()
+    public function testUrlIncludesFromWhenProvided()
     {
-        $param = 'publisher='.$this->params['publisherId'];
+        $page = rand(5, 15);
+        $count = rand(10, 100);
+        $param = 'from='.(($page - 1) * $count);
 
-        $url = $this->client->getUrl();
+        $url = $this->client->setPage($page)->setCount($count)->getUrl();
 
         $this->assertContains($param, $url);
     }
 
-    public function testUrlNotIncludesPublisherWhenNotProvided()
+    public function testUrlNotIncludesFromWhenNotProvided()
     {
-        $param = 'publisher=';
-
-        $url = $this->client->setPublisherId(null)->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
-    public function testUrlIncludesStartWhenProvided()
-    {
-        $page = uniqid();
-        $param = 'start='.$page;
-
-        $url = $this->client->setPage($page)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesStartWhenNotProvided()
-    {
-        $param = 'start=';
+        $param = 'from=';
 
         $url = $this->client->setPage(null)->getUrl();
 
         $this->assertNotContains($param, $url);
     }
 
-    public function testUrlIncludesVersionWhenProvided()
-    {
-        $param = 'v='.$this->params['version'];
-
-        $url = $this->client->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesVersionWhenNotProvided()
-    {
-        $param = 'v=';
-
-        $url = $this->client->setVersion(null)->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
     public function testItCanConnect()
     {
-        $listings = ['results' => [
-            ['jobtitle' => uniqid(), 'company' => uniqid()],
-        ]];
+        $listings = [
+            0 => [
+                'position_title' => uniqid(),
+                'id' => uniqid(),
+            ],
+        ];
 
         $this->client->setKeyword('project manager')
             ->setCity('Chicago')
@@ -213,5 +154,4 @@ class GovtTest extends \PHPUnit_Framework_TestCase
 
         $results = $this->client->getJobs();
     }
-    */
 }
