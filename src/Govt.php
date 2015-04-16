@@ -13,22 +13,30 @@ class Govt extends AbstractProvider
      */
     public function createJobObject($payload)
     {
-        $defaults = ['jobtitle', 'company', 'formattedLocation', 'source',
-            'date', 'snippet', 'url', 'jobkey'];
+        $defaults = ['id', 'position_title', 'organization_name', 'locations',
+            'source', 'start_date', 'end_date', 'url', 'rate_interval_code',
+            'minimum', 'maximum'];
 
         $payload = static::parseAttributeDefaults($payload, $defaults);
 
         $job = new Job([
-            'title' => $payload['jobtitle'],
+            'id' => $payload['id'],
+            'title' => $payload['position_title'],
             'source' => $payload['source'],
-            'dates' => $payload['date'],
-            'description' => $payload['snippet'],
             'url' => $payload['url'],
-            'id' => $payload['jobkey'],
         ]);
 
-        $job->addCompanies($payload['company'])
-            ->addLocations($payload['formattedLocation']);
+        $job->addCompanies($payload['organization_name'])
+            ->addCodes($payload['rate_interval_code']);
+
+        $job->addSalaries($payload['minimum'])
+            ->addSalaries($payload['maximum'])
+            ->addDates($payload['start_date'])
+            ->addDates($payload['end_date']);
+
+        foreach ($payload['locations'] as $location) {
+            $job->addLocations($location);
+        }
 
         return $job;
     }
@@ -50,7 +58,23 @@ class Govt extends AbstractProvider
      */
     public function getListingsPath()
     {
-        return 'results';
+        return null;
+    }
+
+    /**
+     * Get keyword(s)
+     *
+     * @return string
+     */
+    public function getKeyword()
+    {
+        $keyword = ($this->keyword ?: null).' '.($this->getLocation() ?: null);
+
+        if ($keyword) {
+            return $keyword;
+        }
+
+        return null;
     }
 
     /**
@@ -64,6 +88,22 @@ class Govt extends AbstractProvider
 
         if ($location) {
             return $location;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get page
+     *
+     * @return  string
+     */
+    public function getFrom()
+    {
+        $from = ($this->page - 1) * $this->count;
+
+        if ($from) {
+            return $from;
         }
 
         return null;
@@ -87,11 +127,9 @@ class Govt extends AbstractProvider
     public function getQueryString()
     {
         $query_params = [
-            'format' => 'getFormat',
-            'q' => 'getKeyword',
-            'l' => 'getLocation',
-            'start' => 'getPage',
-            'limit' => 'getCount',
+            'query' => 'getKeyword',
+            'from' => 'getFrom',
+            'size' => 'getCount',
         ];
 
         $query_string = [];
@@ -114,7 +152,6 @@ class Govt extends AbstractProvider
     public function getUrl()
     {
         $query_string = $this->getQueryString();
-
         return 'http://api.usa.gov/jobs/search.json?'.$query_string;
     }
 
