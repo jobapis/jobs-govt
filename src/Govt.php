@@ -5,6 +5,12 @@ use JobBrander\Jobs\Client\Job;
 class Govt extends AbstractProvider
 {
     /**
+     * Job provider
+     *
+     * @var string
+     */
+    protected $source = 'Govt';
+    /**
      * Returns the standardized job object
      *
      * @param array $payload
@@ -22,7 +28,7 @@ class Govt extends AbstractProvider
         $job = new Job([
             'id' => $payload['id'],
             'title' => $payload['position_title'],
-            'source' => $payload['source'],
+            'source' => $this->source,
             'url' => $payload['url'],
         ]);
 
