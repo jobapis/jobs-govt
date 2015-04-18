@@ -102,7 +102,7 @@ class Govt extends AbstractProvider
      */
     public function getFrom()
     {
-        if($this->page) {
+        if ($this->page) {
             $from = ($this->page - 1) * $this->count;
 
             if ($from) {
