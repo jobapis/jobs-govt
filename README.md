@@ -46,13 +46,11 @@ $ ./vendor/bin/phpunit
 
 Please see [CONTRIBUTING](https://github.com/jobbrander/jobs-govt/blob/master/CONTRIBUTING.md) for details.
 
-
 ## Credits
 
 - [Steven Maguire](https://github.com/stevenmaguire)
 - [Karl Hughes](https://github.com/karllhughes)
 - [All Contributors](https://github.com/jobbrander/jobs-govt/contributors)
-
 
 ## License
 
