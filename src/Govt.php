@@ -5,12 +5,6 @@ use JobBrander\Jobs\Client\Job;
 class Govt extends AbstractProvider
 {
     /**
-     * Job provider
-     *
-     * @var string
-     */
-    protected $source = 'Govt';
-    /**
      * Returns the standardized job object
      *
      * @param array $payload
@@ -20,30 +14,25 @@ class Govt extends AbstractProvider
     public function createJobObject($payload)
     {
         $defaults = ['id', 'position_title', 'organization_name', 'locations',
-            'source', 'start_date', 'end_date', 'url', 'rate_interval_code',
-            'minimum', 'maximum'];
+            'start_date', 'end_date', 'url', 'rate_interval_code', 'minimum', 'maximum'];
 
         $payload = static::parseAttributeDefaults($payload, $defaults);
 
         $job = new Job([
             'id' => $payload['id'],
             'title' => $payload['position_title'],
-            'source' => $this->source,
             'url' => $payload['url'],
+            'company' => $payload['organization_name'],
+            'minimumSalary' => $payload['minimum'],
+            'maximumSalary' => $payload['maximum'],
+            'startDate' => $payload['start_date'],
+            'endDate' => $payload['end_date'],
         ]);
 
-        $job->addCompanies($payload['organization_name'])
-            ->addCodes($payload['rate_interval_code']);
+        $job->addCodes($payload['rate_interval_code']);
 
-        $job->addSalaries($payload['minimum'])
-            ->addSalaries($payload['maximum'])
-            ->addDates($payload['start_date'])
-            ->addDates($payload['end_date']);
-
-        if (is_array($payload['locations'])) {
-            foreach ($payload['locations'] as $location) {
-                $job->addLocations($location);
-            }
+        if (is_array($payload['locations']) && isset($payload['locations'][0])) {
+            $job->setLocation($payload['locations'][0]);
         }
 
         return $job;

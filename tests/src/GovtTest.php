@@ -131,12 +131,10 @@ class GovtTest extends \PHPUnit_Framework_TestCase
 
     public function testItCanConnect()
     {
-        $listings = [
-            0 => [
-                'position_title' => uniqid(),
-                'id' => uniqid(),
-            ],
-        ];
+        $job_count = rand(2,10);
+        $listings = $this->createJobArray($job_count);
+        $source = $this->client->getSource();
+        $keyword = 'project manager';
 
         $this->client->setKeyword('project manager')
             ->setCity('Chicago')
@@ -153,5 +151,44 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->client->setClient($http);
 
         $results = $this->client->getJobs();
+
+        foreach ($listings as $i => $result) {
+            $this->assertEquals($listings[$i]['id'], $results->get($i)->id);
+            $this->assertEquals($listings[$i]['position_title'], $results->get($i)->title);
+            $this->assertEquals($listings[$i]['url'], $results->get($i)->url);
+            $this->assertEquals($listings[$i]['organization_name'], $results->get($i)->company);
+            $this->assertEquals($listings[$i]['start_date'], $results->get($i)->startDate);
+            $this->assertEquals($listings[$i]['end_date'], $results->get($i)->endDate);
+            $this->assertEquals($listings[$i]['minimum'], $results->get($i)->minimumSalary);
+            $this->assertEquals($listings[$i]['maximum'], $results->get($i)->maximumSalary);
+            $this->assertEquals($keyword, $results->get($i)->query);
+            $this->assertEquals($source, $results->get($i)->source);
+        }
+
+        $this->assertEquals(count($listings), $results->count());
+    }
+
+    private function createJobArray($num = 10) {
+        $jobs = [];
+        $i = 0;
+        while ($i < 10) {
+            $jobs[] = [
+                'id' => uniqid(),
+                'position_title' => uniqid(),
+                'organization_name' => uniqid(),
+                'locations' => [
+                    0 => uniqid(),
+                    1 => uniqid(),
+                    2 => uniqid(),
+                ],
+                'start_date' => uniqid(),
+                'end_date' => uniqid(),
+                'url' => uniqid(),
+                'minimum' => uniqid(),
+                'maximum' => uniqid(),
+            ];
+            $i++;
+        }
+        return $jobs;
     }
 }
