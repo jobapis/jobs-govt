@@ -136,7 +136,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $source = $this->client->getSource();
         $keyword = 'project manager';
 
-        $this->client->setKeyword('project manager')
+        $this->client->setKeyword($keyword)
             ->setCity('Chicago')
             ->setState('IL');
 
