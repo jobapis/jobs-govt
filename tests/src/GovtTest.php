@@ -161,6 +161,9 @@ class GovtTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($listings[$i]['end_date'], $results->get($i)->endDate);
             $this->assertEquals($listings[$i]['minimum'], $results->get($i)->minimumSalary);
             $this->assertEquals($listings[$i]['maximum'], $results->get($i)->maximumSalary);
+
+            // Add assertion related to locations
+
             $this->assertEquals($keyword, $results->get($i)->query);
             $this->assertEquals($source, $results->get($i)->source);
         }
@@ -171,16 +174,12 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     private function createJobArray($num = 10) {
         $jobs = [];
         $i = 0;
-        while ($i < 10) {
+        while ($i < $num) {
             $jobs[] = [
                 'id' => uniqid(),
                 'position_title' => uniqid(),
                 'organization_name' => uniqid(),
-                'locations' => [
-                    0 => uniqid(),
-                    1 => uniqid(),
-                    2 => uniqid(),
-                ],
+                'locations' => $this->createLocationsArray(),
                 'start_date' => uniqid(),
                 'end_date' => uniqid(),
                 'url' => uniqid(),
@@ -190,5 +189,15 @@ class GovtTest extends \PHPUnit_Framework_TestCase
             $i++;
         }
         return $jobs;
+    }
+
+    private function createLocationsArray($num = 2) {
+        $locations = [];
+        $i = 0;
+        while ($i < $num) {
+            $locations[] = uniqid();
+            $i++;
+        }
+        return $locations;
     }
 }

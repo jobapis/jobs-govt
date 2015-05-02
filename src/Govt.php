@@ -1,6 +1,7 @@
 <?php namespace JobBrander\Jobs\Client\Providers;
 
 use JobBrander\Jobs\Client\Job;
+use JobBrander\Jobs\Client\Collection;
 
 class Govt extends AbstractProvider
 {
@@ -13,8 +14,18 @@ class Govt extends AbstractProvider
      */
     public function createJobObject($payload)
     {
-        $defaults = ['id', 'position_title', 'organization_name', 'locations',
-            'start_date', 'end_date', 'url', 'rate_interval_code', 'minimum', 'maximum'];
+        $defaults = [
+            'id',
+            'position_title',
+            'organization_name',
+            'locations',
+            'start_date',
+            'end_date',
+            'url',
+            'rate_interval_code',
+            'minimum',
+            'maximum'
+        ];
 
         $payload = static::parseAttributeDefaults($payload, $defaults);
 
@@ -36,6 +47,28 @@ class Govt extends AbstractProvider
         }
 
         return $job;
+    }
+
+    /**
+     * Create and get collection of jobs from given listings
+     *
+     * @param  array $listings
+     *
+     * @return Collection
+     */
+    protected function getJobsCollectionFromListings(array $listings = array())
+    {
+        $collection = new Collection;
+        array_map(function ($item) use ($collection) {
+
+            // Add stuff to handle multiple locations here...
+
+            $job = $this->createJobObject($item);
+            $job->setQuery($this->keyword)
+                ->setSource($this->getSource());
+            $collection->add($job);
+        }, $listings);
+        return $collection;
     }
 
     /**
