@@ -1,6 +1,23 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 0.2.1 - 2015-05-03
+
+### Added
+- Adding support for multiple jobs from each returned job if multiple locations are present
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.2.0 - 2015-05-02
 
 ### Added
