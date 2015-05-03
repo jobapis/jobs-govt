@@ -129,6 +129,21 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertNotContains($param, $url);
     }
 
+    public function testItCreatesMultipleJobsWhenMultipleLocationsReturned()
+    {
+        $job_count = 1;
+        $loc_count = rand(1,3);
+        $jobs = $this->createJobArray($job_count, $loc_count);
+
+        $array = $this->client->createJobArray($jobs[0]);
+
+        foreach ($array as $key => $job) {
+            $this->assertEquals($jobs[0]['position_title'], $array[0]['position_title']);
+            $this->assertEquals($jobs[0]['locations'][$key], $array[$key]['location']);
+        }
+        $this->assertEquals(($job_count*$loc_count), count($array));
+    }
+
     public function testItCanConnect()
     {
         $job_count = rand(2,10);
@@ -161,9 +176,6 @@ class GovtTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($listings[$i]['end_date'], $results->get($i)->endDate);
             $this->assertEquals($listings[$i]['minimum'], $results->get($i)->minimumSalary);
             $this->assertEquals($listings[$i]['maximum'], $results->get($i)->maximumSalary);
-
-            // Add assertion related to locations
-
             $this->assertEquals($keyword, $results->get($i)->query);
             $this->assertEquals($source, $results->get($i)->source);
         }
@@ -171,15 +183,15 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($listings), $results->count());
     }
 
-    private function createJobArray($num = 10) {
+    private function createJobArray($job_count = 10, $loc_count = 1) {
         $jobs = [];
         $i = 0;
-        while ($i < $num) {
+        while ($i < $job_count) {
             $jobs[] = [
                 'id' => uniqid(),
                 'position_title' => uniqid(),
                 'organization_name' => uniqid(),
-                'locations' => $this->createLocationsArray(),
+                'locations' => $this->createLocationsArray($loc_count),
                 'start_date' => uniqid(),
                 'end_date' => uniqid(),
                 'url' => uniqid(),
@@ -191,10 +203,10 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         return $jobs;
     }
 
-    private function createLocationsArray($num = 2) {
+    private function createLocationsArray($loc_count = 3) {
         $locations = [];
         $i = 0;
-        while ($i < $num) {
+        while ($i < $loc_count) {
             $locations[] = uniqid();
             $i++;
         }

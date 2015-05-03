@@ -18,7 +18,7 @@ class Govt extends AbstractProvider
             'id',
             'position_title',
             'organization_name',
-            'locations',
+            'location',
             'start_date',
             'end_date',
             'url',
@@ -34,6 +34,7 @@ class Govt extends AbstractProvider
             'title' => $payload['position_title'],
             'url' => $payload['url'],
             'company' => $payload['organization_name'],
+            'location' => $payload['location'],
             'minimumSalary' => $payload['minimum'],
             'maximumSalary' => $payload['maximum'],
             'startDate' => $payload['start_date'],
@@ -41,10 +42,6 @@ class Govt extends AbstractProvider
         ]);
 
         $job->addCodes($payload['rate_interval_code']);
-
-        if (is_array($payload['locations']) && isset($payload['locations'][0])) {
-            $job->setLocation($payload['locations'][0]);
-        }
 
         return $job;
     }
@@ -60,15 +57,30 @@ class Govt extends AbstractProvider
     {
         $collection = new Collection;
         array_map(function ($item) use ($collection) {
-
-            // Add stuff to handle multiple locations here...
-
-            $job = $this->createJobObject($item);
-            $job->setQuery($this->keyword)
-                ->setSource($this->getSource());
-            $collection->add($job);
+            $jobs = $this->createJobArray($item);
+            foreach ($jobs as $item) {
+                $job = $this->createJobObject($item);
+                $job->setQuery($this->keyword)
+                    ->setSource($this->getSource());
+                $collection->add($job);
+            }
         }, $listings);
         return $collection;
+    }
+
+    public function createJobArray($item)
+    {
+        $jobs = [];
+        if (isset($item['locations']) && count($item['locations']) > 1) {
+            foreach ($item['locations'] as $location) {
+                $item['location'] = $location;
+                $jobs[] = $item;
+            }
+        } else {
+            $item['location'] = $item['locations'][0];
+            $jobs[] = $item;
+        }
+        return $jobs;
     }
 
     /**
