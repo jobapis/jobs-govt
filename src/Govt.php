@@ -30,7 +30,7 @@ class Govt extends AbstractProvider
         $payload = static::parseAttributeDefaults($payload, $defaults);
 
         $job = new Job([
-            'id' => $payload['id'],
+            'sourceId' => $payload['id'],
             'title' => $payload['position_title'],
             'url' => $payload['url'],
             'company' => $payload['organization_name'],

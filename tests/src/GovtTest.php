@@ -168,7 +168,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $results = $this->client->getJobs();
 
         foreach ($listings as $i => $result) {
-            $this->assertEquals($listings[$i]['id'], $results->get($i)->id);
+            $this->assertEquals($listings[$i]['id'], $results->get($i)->sourceId);
             $this->assertEquals($listings[$i]['position_title'], $results->get($i)->title);
             $this->assertEquals($listings[$i]['url'], $results->get($i)->url);
             $this->assertEquals($listings[$i]['organization_name'], $results->get($i)->company);
