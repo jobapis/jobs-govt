@@ -1,13 +1,30 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
-## 0.3.0 - 2015-05-16
+## 0.4.0 - 2015-05-16
 
 ### Added
 - Nothing
 
 ### Deprecated
 - Removed support for rate_interval_code
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+## 0.3.0 - 2015-05-08
+
+### Added
+- Support for SourceId attribute in Job in common v.0.4.0
+
+### Deprecated
+- Id attribute in Job
 
 ### Fixed
 - Nothing
