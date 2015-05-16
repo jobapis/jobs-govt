@@ -41,8 +41,6 @@ class Govt extends AbstractProvider
             'endDate' => $payload['end_date'],
         ]);
 
-        $job->addCodes($payload['rate_interval_code']);
-
         return $job;
     }
 

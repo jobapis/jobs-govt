@@ -1,6 +1,23 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 0.3.0 - 2015-05-16
+
+### Added
+- Nothing
+
+### Deprecated
+- Removed support for rate_interval_code
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.2.1 - 2015-05-03
 
 ### Added
