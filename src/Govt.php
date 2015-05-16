@@ -22,7 +22,6 @@ class Govt extends AbstractProvider
             'start_date',
             'end_date',
             'url',
-            'rate_interval_code',
             'minimum',
             'maximum'
         ];
