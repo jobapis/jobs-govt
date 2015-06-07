@@ -1,6 +1,23 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 0.4.1 - 2015-06-07
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Fixing tests for guzzle v.6.0
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.4.0 - 2015-05-16
 
 ### Added

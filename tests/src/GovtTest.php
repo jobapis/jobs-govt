@@ -5,6 +5,10 @@ use Mockery as m;
 
 class GovtTest extends \PHPUnit_Framework_TestCase
 {
+    private $clientClass = 'JobBrander\Jobs\Client\Providers\AbstractProvider';
+    private $collectionClass = 'JobBrander\Jobs\Client\Collection';
+    private $jobClass = 'JobBrander\Jobs\Client\Job';
+
     public function setUp()
     {
         $this->client = new Govt();
@@ -131,32 +135,61 @@ class GovtTest extends \PHPUnit_Framework_TestCase
 
     public function testItCreatesMultipleJobsWhenMultipleLocationsReturned()
     {
-        $job_count = 1;
-        $loc_count = rand(1,3);
-        $jobs = $this->createJobArray($job_count, $loc_count);
+        $loc_count = rand(2,5);
+        $jobArray = $this->createJobArray($loc_count);
 
-        $array = $this->client->createJobArray($jobs[0]);
+        $array = $this->client->createJobArray($jobArray);
 
         foreach ($array as $key => $job) {
-            $this->assertEquals($jobs[0]['position_title'], $array[0]['position_title']);
-            $this->assertEquals($jobs[0]['locations'][$key], $array[$key]['location']);
+            $this->assertEquals($jobArray['position_title'], $array[0]['position_title']);
+            $this->assertEquals($jobArray['locations'][$key], $array[$key]['location']);
         }
-        $this->assertEquals(($job_count*$loc_count), count($array));
+        $this->assertEquals($loc_count, count($array));
+    }
+
+    public function testItCreatesOneJobWhenOneLocationsReturned()
+    {
+        $loc_count = 1;
+        $jobArray = $this->createJobArray($loc_count);
+
+        $array = $this->client->createJobArray($jobArray);
+
+        foreach ($array as $key => $job) {
+            $this->assertEquals($jobArray['position_title'], $array[0]['position_title']);
+            $this->assertEquals($jobArray['locations'][$key], $array[$key]['location']);
+        }
+        $this->assertEquals($loc_count, count($array));
+    }
+
+    public function testItCanCreateJobFromPayload()
+    {
+        $payload = $this->createJobArray(2);
+        $results = $this->client->createJobObject($payload);
+
+        $this->assertEquals($payload['id'], $results->sourceId);
+        $this->assertEquals($payload['position_title'], $results->title);
+        $this->assertEquals($payload['organization_name'], $results->company);
+        $this->assertEquals($payload['url'], $results->url);
     }
 
     public function testItCanConnect()
     {
-        $job_count = rand(2,10);
-        $listings = $this->createJobArray($job_count);
-        $source = $this->client->getSource();
-        $keyword = 'project manager';
+        $provider = $this->getProviderAttributes();
 
-        $this->client->setKeyword($keyword)
-            ->setCity('Chicago')
-            ->setState('IL');
+        for ($i = 0; $i < $provider['jobs_count']; $i++) {
+            $payload[] = $this->createJobArray();
+        }
+
+        $responseBody = json_encode($payload);
+
+        $job = m::mock($this->jobClass);
+        $job->shouldReceive('setQuery')->with($provider['keyword'])
+            ->times($provider['jobs_count'])->andReturnSelf();
+        $job->shouldReceive('setSource')->with($provider['source'])
+            ->times($provider['jobs_count'])->andReturnSelf();
 
         $response = m::mock('GuzzleHttp\Message\Response');
-        $response->shouldReceive($this->client->getFormat())->once()->andReturn($listings);
+        $response->shouldReceive('getBody')->once()->andReturn($responseBody);
 
         $http = m::mock('GuzzleHttp\Client');
         $http->shouldReceive(strtolower($this->client->getVerb()))
@@ -167,40 +200,22 @@ class GovtTest extends \PHPUnit_Framework_TestCase
 
         $results = $this->client->getJobs();
 
-        foreach ($listings as $i => $result) {
-            $this->assertEquals($listings[$i]['id'], $results->get($i)->sourceId);
-            $this->assertEquals($listings[$i]['position_title'], $results->get($i)->title);
-            $this->assertEquals($listings[$i]['url'], $results->get($i)->url);
-            $this->assertEquals($listings[$i]['organization_name'], $results->get($i)->company);
-            $this->assertEquals($listings[$i]['start_date'], $results->get($i)->startDate);
-            $this->assertEquals($listings[$i]['end_date'], $results->get($i)->endDate);
-            $this->assertEquals($listings[$i]['minimum'], $results->get($i)->minimumSalary);
-            $this->assertEquals($listings[$i]['maximum'], $results->get($i)->maximumSalary);
-            $this->assertEquals($keyword, $results->get($i)->query);
-            $this->assertEquals($source, $results->get($i)->source);
-        }
-
-        $this->assertEquals(count($listings), $results->count());
+        $this->assertInstanceOf($this->collectionClass, $results);
+        $this->assertCount($provider['jobs_count'], $results);
     }
 
-    private function createJobArray($job_count = 10, $loc_count = 1) {
-        $jobs = [];
-        $i = 0;
-        while ($i < $job_count) {
-            $jobs[] = [
-                'id' => uniqid(),
-                'position_title' => uniqid(),
-                'organization_name' => uniqid(),
-                'locations' => $this->createLocationsArray($loc_count),
-                'start_date' => uniqid(),
-                'end_date' => uniqid(),
-                'url' => uniqid(),
-                'minimum' => uniqid(),
-                'maximum' => uniqid(),
-            ];
-            $i++;
-        }
-        return $jobs;
+    private function createJobArray($loc_count = 1) {
+        return [
+            'id' => uniqid(),
+            'position_title' => uniqid(),
+            'organization_name' => uniqid(),
+            'locations' => $this->createLocationsArray($loc_count),
+            'start_date' => uniqid(),
+            'end_date' => uniqid(),
+            'url' => uniqid(),
+            'minimum' => uniqid(),
+            'maximum' => uniqid(),
+        ];
     }
 
     private function createLocationsArray($loc_count = 3) {
@@ -211,5 +226,19 @@ class GovtTest extends \PHPUnit_Framework_TestCase
             $i++;
         }
         return $locations;
+    }
+
+    private function getProviderAttributes($attributes = [])
+    {
+        $defaults = [
+            'path' => uniqid(),
+            'format' => 'json',
+            'keyword' => uniqid(),
+            'source' => uniqid(),
+            'params' => [uniqid()],
+            'jobs_count' => rand(2,10),
+
+        ];
+        return array_replace($defaults, $attributes);
     }
 }
