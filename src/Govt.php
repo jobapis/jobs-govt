@@ -33,15 +33,24 @@ class Govt extends AbstractProvider
             'title' => $payload['position_title'],
             'name' => $payload['position_title'],
             'url' => $payload['url'],
-            'company' => $payload['organization_name'],
             'location' => $payload['location'],
-            'minimumSalary' => $payload['minimum'],
             'maximumSalary' => $payload['maximum'],
             'startDate' => $payload['start_date'],
             'endDate' => $payload['end_date'],
         ]);
 
-        $job->setDatePostedAsString($payload['start_date']);
+        $location = $this->parseLocation($payload['location']);
+
+        $job->setCompany($payload['organization_name'])
+            ->setDatePostedAsString($payload['start_date'])
+            ->setMinimumSalary($payload['minimum']);
+
+        if (isset($location[0])) {
+            $job->setCity($location[0]);
+        }
+        if (isset($location[1])) {
+            $job->setState($location[1]);
+        }
 
         return $job;
     }
@@ -207,5 +216,15 @@ class Govt extends AbstractProvider
     public function getVerb()
     {
         return 'GET';
+    }
+
+    /**
+     * Parse city and state from string given by API
+     *
+     * @return array
+     */
+    public function parseLocation($location)
+    {
+        return explode(', ', $location);
     }
 }

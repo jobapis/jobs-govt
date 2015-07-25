@@ -6,6 +6,7 @@ All Notable changes to `jobs-govt` will be documented in this file
 ### Added
 - Name and title field equal to returned job title
 - Using start date as posted date
+- Adding city/state parsing to use setCity/setState methods
 
 ### Deprecated
 - Nothing
