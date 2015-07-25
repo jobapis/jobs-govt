@@ -1,6 +1,24 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 0.4.3 - 2015-07-25
+
+### Added
+- Name and title field equal to returned job title
+- Using start date as posted date
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.4.2 - 2015-07-04
 
 ### Added

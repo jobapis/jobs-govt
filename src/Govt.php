@@ -31,6 +31,7 @@ class Govt extends AbstractProvider
         $job = new Job([
             'sourceId' => $payload['id'],
             'title' => $payload['position_title'],
+            'name' => $payload['position_title'],
             'url' => $payload['url'],
             'company' => $payload['organization_name'],
             'location' => $payload['location'],
@@ -39,6 +40,8 @@ class Govt extends AbstractProvider
             'startDate' => $payload['start_date'],
             'endDate' => $payload['end_date'],
         ]);
+
+        $job->setDatePostedAsString($payload['start_date']);
 
         return $job;
     }
