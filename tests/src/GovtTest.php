@@ -58,7 +58,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     {
         $city = uniqid();
         $state = uniqid();
-        $param = 'query='.urlencode($city.', '.$state);
+        $param = 'query='.urlencode(' in '.$city.', '.$state);
 
         $url = $this->client->setCity($city)->setState($state)->getUrl();
 
@@ -68,7 +68,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     public function testUrlIncludesKeywordWhenCityProvided()
     {
         $city = uniqid();
-        $param = 'query='.urlencode($city);
+        $param = 'query='.urlencode(' in '.$city);
 
         $url = $this->client->setCity($city)->getUrl();
 
@@ -78,7 +78,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     public function testUrlIncludesKeywordWhenStateProvided()
     {
         $state = uniqid();
-        $param = 'query='.urlencode($state);
+        $param = 'query='.urlencode(' in '.$state);
 
         $url = $this->client->setState($state)->getUrl();
 

@@ -12,7 +12,7 @@ All Notable changes to `jobs-govt` will be documented in this file
 - Nothing
 
 ### Fixed
-- Nothing
+- Added " in " to search string when looking for locations to correct erroneous results
 
 ### Removed
 - Nothing

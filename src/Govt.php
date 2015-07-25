@@ -119,7 +119,7 @@ class Govt extends AbstractProvider
      */
     public function getKeyword()
     {
-        $keyword = ($this->keyword ? $this->keyword.' ' : null).($this->getLocation() ?: null);
+        $keyword = ($this->keyword ? $this->keyword : null).($this->getLocation() ? ' in '.$this->getLocation() : null);
 
         if ($keyword) {
             return $keyword;
