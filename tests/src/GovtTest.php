@@ -222,7 +222,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $locations = [];
         $i = 0;
         while ($i < $loc_count) {
-            $locations[] = uniqid();
+            $locations[] = uniqid().', '.uniqid();
             $i++;
         }
         return $locations;
