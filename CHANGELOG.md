@@ -1,6 +1,24 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 0.5.0 - 2015-08-14
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Updated to v1.0.3 of jobs-common
+
+### Removed
+- Query setters for city/state/location as the API doesn't officially support them
+- getParameters and parseLocation methods
+
+### Security
+- Nothing
+
 ## 0.4.3 - 2015-07-25
 
 ### Added

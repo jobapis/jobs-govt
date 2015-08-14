@@ -54,37 +54,6 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($param, $url);
     }
 
-    public function testUrlIncludesKeywordWhenCityAndStateProvided()
-    {
-        $city = uniqid();
-        $state = uniqid();
-        $param = 'query='.urlencode(' in '.$city.', '.$state);
-
-        $url = $this->client->setCity($city)->setState($state)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlIncludesKeywordWhenCityProvided()
-    {
-        $city = uniqid();
-        $param = 'query='.urlencode(' in '.$city);
-
-        $url = $this->client->setCity($city)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlIncludesKeywordWhenStateProvided()
-    {
-        $state = uniqid();
-        $param = 'query='.urlencode(' in '.$state);
-
-        $url = $this->client->setState($state)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
     public function testUrlNotIncludesKeywordWhenNotProvided()
     {
         $param = 'query=';

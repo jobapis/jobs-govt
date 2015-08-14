@@ -27,14 +27,21 @@ as the provider.
 $client = new JobBrander\Jobs\Client\Provider\Govt();
 
 // Search for 200 job listings for 'project manager' in Chicago, IL
-$jobs = $client->setKeyword('project manager')
-    ->setCity('Chicago')
-    ->setState('IL')
+$jobs = $client->setKeyword('project manager')\
     ->setCount(200)
     ->getJobs();
 ```
 
 The `getJobs` method will return a [Collection](https://github.com/JobBrander/jobs-common/blob/master/src/Collection.php) of [Job](https://github.com/JobBrander/jobs-common/blob/master/src/Job.php) objects.
+
+### Location Queries
+
+Because this API does not support location-based queries, you will need to add the location
+to your setKeyword() method call. For example:
+
+```
+$jobs = $client->setKeyword('project manager in chicago, il')->getJobs();
+```
 
 ## Testing
 
