@@ -163,16 +163,6 @@ class Govt extends AbstractProvider
     }
 
     /**
-     * Get parameters
-     *
-     * @return  array
-     */
-    public function getParameters()
-    {
-        return [];
-    }
-
-    /**
      * Get query string for client based on properties
      *
      * @return string
