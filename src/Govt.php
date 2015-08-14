@@ -39,7 +39,7 @@ class Govt extends AbstractProvider
             'endDate' => $payload['end_date'],
         ]);
 
-        $location = $this->parseLocation($payload['location']);
+        $location = static::parseLocation($payload['location']);
 
         $job->setCompany($payload['organization_name'])
             ->setDatePostedAsString($payload['start_date'])
@@ -206,15 +206,5 @@ class Govt extends AbstractProvider
     public function getVerb()
     {
         return 'GET';
-    }
-
-    /**
-     * Parse city and state from string given by API
-     *
-     * @return array
-     */
-    public function parseLocation($location)
-    {
-        return explode(', ', $location);
     }
 }
