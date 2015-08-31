@@ -7,8 +7,8 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/JobBrander/jobs-govt.svg?style=flat-square)](https://scrutinizer-ci.com/g/JobBrander/jobs-govt)
 [![Total Downloads](https://img.shields.io/packagist/dt/jobbrander/jobs-govt.svg?style=flat-square)](https://packagist.org/packages/jobbrander/jobs-govt)
 
-This package provides Government Jobs API support for the JobBrander's
-[Jobs Client](https://github.com/JobBrander/jobs-common).
+This package provides [Government Jobs API](http://search.digitalgov.gov/developer/jobs.html)
+support for the JobBrander's [Jobs Client](https://github.com/JobBrander/jobs-common).
 
 ## Installation
 
@@ -27,8 +27,9 @@ as the provider.
 $client = new JobBrander\Jobs\Client\Provider\Govt();
 
 // Search for 200 job listings for 'project manager' in Chicago, IL
-$jobs = $client->setKeyword('project manager')\
-    ->setCount(200)
+$jobs = $client->setKeyword('project manager') // Attempts to extract as much "signal" as possible from the input text. Handles word variants, so a search on "nursing jobs" will find a job titled "nurse practitioner" and "RN." When parts of the query parameter are used to search against the position title, the results are ordered by relevance. When no query parameter is specified, they are ordered by date with the most recent listed first.
+    ->setCount(100) // Specifies how many results are returned (up to 100 at a time)
+    ->setFrom(10) // Specifies the starting record
     ->getJobs();
 ```
 
