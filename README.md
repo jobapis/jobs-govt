@@ -27,9 +27,18 @@ as the provider.
 $client = new JobBrander\Jobs\Client\Provider\Govt();
 
 // Search for 200 job listings for 'project manager' in Chicago, IL
-$jobs = $client->setKeyword('project manager') // Attempts to extract as much "signal" as possible from the input text. Handles word variants, so a search on "nursing jobs" will find a job titled "nurse practitioner" and "RN." When parts of the query parameter are used to search against the position title, the results are ordered by relevance. When no query parameter is specified, they are ordered by date with the most recent listed first.
-    ->setCount(100) // Specifies how many results are returned (up to 100 at a time)
-    ->setFrom(10) // Specifies the starting record
+$jobs = $client
+    // API parameters
+    ->setQuery()                    // Attempts to extract as much "signal" as possible from the input text. Handles word variants, so a search on "nursing jobs" will find a job titled "nurse practitioner" and "RN." When parts of the query parameter are used to search against the position title, the results are ordered by relevance. When no query parameter is specified, they are ordered by date with the most recent listed first.
+    ->setOrganizationIds()          // A comma-separated string specifying which federal, state, or local agencies to use as a filter.
+    ->setHl()                       // No highlighting is included by default. Use 'hl=1' to highlight terms in the position title that match terms in the user's search.
+    ->setSize()                     // Specifies how many results are returned (up to 100 at a time).
+    ->setFrom()                     // Specifies the starting record.
+    ->setTags()                     // A comma-separated string specifying the level of government. Current tags are federal, state, county, and city.
+    ->setLatLon()                   // Comma-separated pair denoting the position of the searcher looking for a job. For example, 'lat_lon=37.783333,-122.416667' is the value for San Francisco, CA.
+    // Jobbrander parameters
+    ->setKeyword('project manager') // See "setQuery()" method above
+    ->setCount(100)                 // See "setSize()" method above
     ->getJobs();
 ```
 
