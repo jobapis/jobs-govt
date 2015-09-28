@@ -84,11 +84,10 @@ class GovtTest extends \PHPUnit_Framework_TestCase
 
     public function testUrlIncludesFromWhenProvided()
     {
-        $page = rand(5, 15);
-        $count = rand(10, 100);
-        $param = 'from='.(($page - 1) * $count);
+        $from = rand(10, 100);
+        $param = 'from='.$from;
 
-        $url = $this->client->setPage($page)->setCount($count)->getUrl();
+        $url = $this->client->setFrom($from)->getUrl();
 
         $this->assertContains($param, $url);
     }
@@ -97,7 +96,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     {
         $param = 'from=';
 
-        $url = $this->client->setPage(null)->getUrl();
+        $url = $this->client->setFrom(null)->getUrl();
 
         $this->assertNotContains($param, $url);
     }
