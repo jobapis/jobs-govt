@@ -104,19 +104,13 @@ class Govt extends AbstractProvider
     }
 
     /**
-     * Get from page number
+     * Get count
      *
-     * @return  string
+     * @return string
      */
-    public function getFrom()
+    public function getCount()
     {
-        if ($this->page) {
-            $from = ($this->page - 1) * $this->count;
-            if ($from) {
-                return $from;
-            }
-        }
-        return null;
+        return $this->size;
     }
 
     /**
@@ -132,8 +126,9 @@ class Govt extends AbstractProvider
         array_map(function ($item) use ($collection) {
             $jobs = $this->createJobArray($item);
             foreach ($jobs as $item) {
+                $item = static::parseAttributeDefaults($item, $this->defaultResponseFields());
                 $job = $this->createJobObject($item);
-                $job->setQuery($this->keyword)
+                $job->setQuery($this->getKeyword())
                     ->setSource($this->getSource());
                 $collection->add($job);
             }
@@ -148,13 +143,17 @@ class Govt extends AbstractProvider
      */
     public function getKeyword()
     {
-        $keyword = ($this->keyword ? $this->keyword : null);
+        return $this->query;
+    }
 
-        if ($keyword) {
-            return $keyword;
-        }
-
-        return null;
+    /**
+     * Get lat_lon
+     *
+     * @return string
+     */
+    public function getLatLon()
+    {
+        return $this->lat_lon;
     }
 
     /**
@@ -168,6 +167,16 @@ class Govt extends AbstractProvider
     }
 
     /**
+     * Get organization_ids
+     *
+     * @return string
+     */
+    public function getOrganizationIds()
+    {
+        return $this->organization_ids;
+    }
+
+    /**
      * Get parameters that MUST be set in order to satisfy the APIs requirements
      *
      * @return  string
@@ -175,6 +184,50 @@ class Govt extends AbstractProvider
     public function requiredParameters()
     {
         return [];
+    }
+
+    /**
+     * Set count (aka size)
+     *
+     * @return string
+     */
+    public function setCount($value)
+    {
+        $this->size = $value;
+        return $this;
+    }
+
+    /**
+     * Set keyword
+     *
+     * @return string
+     */
+    public function setKeyword($value)
+    {
+        $this->query = $value;
+        return $this;
+    }
+
+    /**
+     * Set lat_lon
+     *
+     * @return string
+     */
+    public function setLatLon($value)
+    {
+        $this->lat_lon = $value;
+        return $this;
+    }
+
+    /**
+     * Set organization_ids
+     *
+     * @return string
+     */
+    public function setOrganizationIds($value)
+    {
+        $this->organization_ids = $value;
+        return $this;
     }
 
     /**

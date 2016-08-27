@@ -36,14 +36,6 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $path);
     }
 
-    public function testItWillProvideEmptyParameters()
-    {
-        $parameters = $this->client->getParameters();
-
-        $this->assertEmpty($parameters);
-        $this->assertTrue(is_array($parameters));
-    }
-
     public function testUrlIncludesKeywordWhenKeywordProvided()
     {
         $keyword = uniqid().' '.uniqid();
@@ -129,9 +121,11 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($loc_count, count($array));
     }
 
-    public function testItCanCreateJobFromPayload()
+    public function testItCanCreateJobObjectFromCleanedPayload()
     {
-        $payload = $this->createJobArray(2);
+        $payload = $this->createJobArray(1);
+        $payload['location'] = $payload['locations'][0];
+
         $results = $this->client->createJobObject($payload);
 
         $this->assertEquals($payload['id'], $results->sourceId);
@@ -140,36 +134,45 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($payload['url'], $results->url);
     }
 
-    public function testItCanConnect()
+    public function testItCanSetAllMethodsInReadme()
     {
-        $provider = $this->getProviderAttributes();
+        $attributes = [
+            'keyword' => uniqid(),
+            'organizationIds' => uniqid(),
+            'hl' => rand(0,1),
+            'count' => rand(1,5),
+            'from' => rand(1,5),
+            'tags' => uniqid(),
+            'latLon' => uniqid(),
+        ];
+        $client = new Govt;
+        // Set all values
+        foreach ($attributes as $key => $val) {
+            $client->{'set'.ucfirst($key)}($val);
+        }
+        // Get all values
+        foreach ($attributes as $key => $val) {
+            $this->assertEquals($val, $client->{'get'.ucfirst($key)}(), "$key was not set or retrieved properly.");
+        }
+    }
 
-        for ($i = 0; $i < $provider['jobs_count']; $i++) {
-            $payload[] = $this->createJobArray();
+    public function testItCanRetreiveRealResults()
+    {
+        if (!getenv('REAL_CALL')) {
+            $this->markTestSkipped('REAL_CALL not set. Real API call will not be made.');
         }
 
-        $responseBody = json_encode($payload);
+        $client = new Govt;
 
-        $job = m::mock($this->jobClass);
-        $job->shouldReceive('setQuery')->with($provider['keyword'])
-            ->times($provider['jobs_count'])->andReturnSelf();
-        $job->shouldReceive('setSource')->with($provider['source'])
-            ->times($provider['jobs_count'])->andReturnSelf();
+        $keyword = 'engineering';
+        $client->setKeyword($keyword);
+        $results = $client->getJobs();
 
-        $response = m::mock('GuzzleHttp\Message\Response');
-        $response->shouldReceive('getBody')->once()->andReturn($responseBody);
+        $this->assertInstanceOf('JobApis\Jobs\Client\Collection', $results);
 
-        $http = m::mock('GuzzleHttp\Client');
-        $http->shouldReceive(strtolower($this->client->getVerb()))
-            ->with($this->client->getUrl(), $this->client->getHttpClientOptions())
-            ->once()
-            ->andReturn($response);
-        $this->client->setClient($http);
-
-        $results = $this->client->getJobs();
-
-        $this->assertInstanceOf($this->collectionClass, $results);
-        $this->assertCount($provider['jobs_count'], $results);
+        foreach($results as $job) {
+            $this->assertEquals($keyword, $job->query);
+        }
     }
 
     private function createJobArray($loc_count = 1) {
@@ -194,19 +197,5 @@ class GovtTest extends \PHPUnit_Framework_TestCase
             $i++;
         }
         return $locations;
-    }
-
-    private function getProviderAttributes($attributes = [])
-    {
-        $defaults = [
-            'path' => uniqid(),
-            'format' => 'json',
-            'keyword' => uniqid(),
-            'source' => uniqid(),
-            'params' => [uniqid()],
-            'jobs_count' => rand(2,10),
-
-        ];
-        return array_replace($defaults, $attributes);
     }
 }
