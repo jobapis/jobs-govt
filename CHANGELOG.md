@@ -1,6 +1,23 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 1.0.0 - 2016-08-27
+
+### Added
+- Changed namespace and organization to `jobapis`.
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.6.0 - 2015-09-28
 
 ### Added
