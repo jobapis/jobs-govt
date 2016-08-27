@@ -1,7 +1,7 @@
-<?php namespace JobBrander\Jobs\Client\Providers;
+<?php namespace JobApis\Jobs\Client\Providers;
 
-use JobBrander\Jobs\Client\Job;
-use JobBrander\Jobs\Client\Collection;
+use JobApis\Jobs\Client\Job;
+use JobApis\Jobs\Client\Collection;
 
 class Govt extends AbstractProvider
 {
@@ -69,7 +69,7 @@ class Govt extends AbstractProvider
      *
      * @param array $payload
      *
-     * @return \JobBrander\Jobs\Client\Job
+     * @return \JobApis\Jobs\Client\Job
      */
     public function createJobObject($payload)
     {

@@ -1,5 +1,5 @@
 {
-    "name": "jobbrander/jobs-govt",
+    "name": "jobapis/jobs-govt",
     "type": "library",
     "description": "Making it simple to integrate your application with the Government Jobs API.",
     "keywords": [
@@ -8,23 +8,23 @@
         "object",
         "government jobs"
     ],
-    "homepage": "https://github.com/JobBrander/jobs-govt",
+    "homepage": "https://github.com/jobapis/jobs-govt",
     "license": "Apache-2.0",
     "authors": [
-        {
-            "name": "Steven Maguire",
-            "email": "stevenmaguire@gmail.com",
-            "homepage": "https://github.com/stevenmaguire"
-        },
         {
             "name": "Karl Hughes",
             "email": "khughes.me@gmail.com",
             "homepage": "https://github.com/karllhughes"
+        },
+        {
+            "name": "Steven Maguire",
+            "email": "stevenmaguire@gmail.com",
+            "homepage": "https://github.com/stevenmaguire"
         }
     ],
     "require": {
         "php": ">=5.5.0",
-        "jobbrander/jobs-common": "~1.0.3"
+        "jobbrander/jobs-common": "dev-v2-beta"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.6",
@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "JobBrander\\Jobs\\Client\\Providers\\": "src/"
+            "JobApis\\Jobs\\Client\\Providers\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JobBrander\\Jobs\\Client\\Providers\\Test\\": "tests/src/"
+            "JobApis\\Jobs\\Client\\Providers\\Test\\": "tests/src/"
         }
     }
 }

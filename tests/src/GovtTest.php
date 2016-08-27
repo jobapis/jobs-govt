@@ -1,13 +1,13 @@
-<?php namespace JobBrander\Jobs\Client\Providers\Test;
+<?php namespace JobApis\Jobs\Client\Providers\Test;
 
-use JobBrander\Jobs\Client\Providers\Govt;
+use JobApis\Jobs\Client\Providers\Govt;
 use Mockery as m;
 
 class GovtTest extends \PHPUnit_Framework_TestCase
 {
-    private $clientClass = 'JobBrander\Jobs\Client\Providers\AbstractProvider';
-    private $collectionClass = 'JobBrander\Jobs\Client\Collection';
-    private $jobClass = 'JobBrander\Jobs\Client\Job';
+    private $clientClass = 'JobApis\Jobs\Client\Providers\AbstractProvider';
+    private $collectionClass = 'JobApis\Jobs\Client\Collection';
+    private $jobClass = 'JobApis\Jobs\Client\Job';
 
     public function setUp()
     {
