@@ -5,6 +5,7 @@ All Notable changes to `jobs-govt` will be documented in this file
 
 ### Added
 - Changed namespace and organization to `jobapis`.
+- Support for v2 of jobs-common package.
 
 ### Deprecated
 - Nothing
@@ -13,7 +14,7 @@ All Notable changes to `jobs-govt` will be documented in this file
 - Nothing
 
 ### Removed
-- Nothing
+- Old getters and setters that were not accurately reflected in the API (eg: setLocation)
 
 ### Security
 - Nothing
