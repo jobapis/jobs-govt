@@ -79,8 +79,6 @@ class GovtProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testItCanGetJobs()
     {
-        $url = 'https://api.usa.gov/jobs/search.json';
-
         $options = [
             'query' => uniqid(),
             'hl' => uniqid(),
