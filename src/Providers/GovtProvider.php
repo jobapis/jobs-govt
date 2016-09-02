@@ -3,10 +3,8 @@
 use JobApis\Jobs\Client\Job;
 use JobApis\Jobs\Client\Collection;
 
-class Govt extends AbstractProvider
+class GovtProvider extends AbstractProvider
 {
-    protected $baseUrl = 'http://api.usa.gov/jobs/search.json';
-
     /**
      * Takes a job valid for multiple locations and turns it into multiple jobs
      *
@@ -66,29 +64,11 @@ class Govt extends AbstractProvider
     }
 
     /**
-     * Get default parameters and values
+     * Job response object default keys that should be set
      *
-     * @return  string
+     * @return  array
      */
-    public function defaultParameters()
-    {
-        return [
-            'from' => null,
-            'hl' => null,
-            'lat_lon' => null,
-            'organization_ids' => null,
-            'query' => null,
-            'size' => null,
-            'tags' => null,
-        ];
-    }
-
-    /**
-     * Job object default keys that must be set.
-     *
-     * @return  string
-     */
-    public function defaultResponseFields()
+    public function getDefaultResponseFields()
     {
         return [
             'id',
@@ -104,13 +84,13 @@ class Govt extends AbstractProvider
     }
 
     /**
-     * Get count
+     * Get listings path
      *
-     * @return string
+     * @return  string
      */
-    public function getCount()
+    public function getListingsPath()
     {
-        return $this->size;
+        return '';
     }
 
     /**
@@ -126,117 +106,13 @@ class Govt extends AbstractProvider
         array_map(function ($item) use ($collection) {
             $jobs = $this->createJobArray($item);
             foreach ($jobs as $item) {
-                $item = static::parseAttributeDefaults($item, $this->defaultResponseFields());
+                $item = static::parseAttributeDefaults($item, $this->getDefaultResponseFields());
                 $job = $this->createJobObject($item);
-                $job->setQuery($this->getKeyword())
+                $job->setQuery($this->query->getKeyword())
                     ->setSource($this->getSource());
                 $collection->add($job);
             }
         }, $listings);
         return $collection;
-    }
-
-    /**
-     * Get keyword(s)
-     *
-     * @return string
-     */
-    public function getKeyword()
-    {
-        return $this->query;
-    }
-
-    /**
-     * Get lat_lon
-     *
-     * @return string
-     */
-    public function getLatLon()
-    {
-        return $this->lat_lon;
-    }
-
-    /**
-     * Get listings path
-     *
-     * @return  string
-     */
-    public function getListingsPath()
-    {
-        return null;
-    }
-
-    /**
-     * Get organization_ids
-     *
-     * @return string
-     */
-    public function getOrganizationIds()
-    {
-        return $this->organization_ids;
-    }
-
-    /**
-     * Get parameters that MUST be set in order to satisfy the APIs requirements
-     *
-     * @return  string
-     */
-    public function requiredParameters()
-    {
-        return [];
-    }
-
-    /**
-     * Set count (aka size)
-     *
-     * @return string
-     */
-    public function setCount($value)
-    {
-        $this->size = $value;
-        return $this;
-    }
-
-    /**
-     * Set keyword
-     *
-     * @return string
-     */
-    public function setKeyword($value)
-    {
-        $this->query = $value;
-        return $this;
-    }
-
-    /**
-     * Set lat_lon
-     *
-     * @return string
-     */
-    public function setLatLon($value)
-    {
-        $this->lat_lon = $value;
-        return $this;
-    }
-
-    /**
-     * Set organization_ids
-     *
-     * @return string
-     */
-    public function setOrganizationIds($value)
-    {
-        $this->organization_ids = $value;
-        return $this;
-    }
-
-    /**
-     * Get parameters that CAN be set
-     *
-     * @return  string
-     */
-    public function validParameters()
-    {
-        return array_keys($this->defaultParameters());
     }
 }

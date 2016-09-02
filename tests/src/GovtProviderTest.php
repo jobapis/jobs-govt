@@ -1,105 +1,46 @@
 <?php namespace JobApis\Jobs\Client\Providers\Test;
 
-use JobApis\Jobs\Client\Providers\Govt;
+use JobApis\Jobs\Client\Collection;
+use JobApis\Jobs\Client\Job;
+use JobApis\Jobs\Client\Providers\GovtProvider;
+use JobApis\Jobs\Client\Queries\GovtQuery;
 use Mockery as m;
 
-class GovtTest extends \PHPUnit_Framework_TestCase
+class GovtProviderTest extends \PHPUnit_Framework_TestCase
 {
-    private $clientClass = 'JobApis\Jobs\Client\Providers\AbstractProvider';
-    private $collectionClass = 'JobApis\Jobs\Client\Collection';
-    private $jobClass = 'JobApis\Jobs\Client\Job';
-
     public function setUp()
     {
-        $this->client = new Govt();
+        $this->query = m::mock('JobApis\Jobs\Client\Queries\GovtQuery');
+
+        $this->client = new GovtProvider($this->query);
     }
 
-    public function testItWillUseJsonFormat()
+    public function testItCanGetDefaultResponseFields()
     {
-        $format = $this->client->getFormat();
-
-        $this->assertEquals('json', $format);
+        $fields = [
+            'id',
+            'position_title',
+            'organization_name',
+            'location',
+            'start_date',
+            'end_date',
+            'url',
+            'minimum',
+            'maximum'
+        ];
+        $this->assertEquals($fields, $this->client->getDefaultResponseFields());
     }
 
-    public function testItWillUseGetHttpVerb()
+    public function testItCanGetListingsPath()
     {
-        $verb = $this->client->getVerb();
-
-        $this->assertEquals('GET', $verb);
-    }
-
-    public function testListingPath()
-    {
-        $path = $this->client->getListingsPath();
-
-        $this->assertEmpty($path);
-        $this->assertEquals(null, $path);
-    }
-
-    public function testUrlIncludesKeywordWhenKeywordProvided()
-    {
-        $keyword = uniqid().' '.uniqid();
-        $param = 'query='.urlencode($keyword);
-
-        $url = $this->client->setKeyword($keyword)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesKeywordWhenNotProvided()
-    {
-        $param = 'query=';
-
-        $url = $this->client->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
-    public function testUrlIncludesSizeWhenProvided()
-    {
-        $size = uniqid();
-        $param = 'size='.$size;
-
-        $url = $this->client->setCount($size)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesSizeWhenNotProvided()
-    {
-        $param = 'size=';
-
-        $url = $this->client->setCount(null)->getUrl();
-
-        $this->assertNotContains($param, $url);
-    }
-
-    public function testUrlIncludesFromWhenProvided()
-    {
-        $from = rand(10, 100);
-        $param = 'from='.$from;
-
-        $url = $this->client->setFrom($from)->getUrl();
-
-        $this->assertContains($param, $url);
-    }
-
-    public function testUrlNotIncludesFromWhenNotProvided()
-    {
-        $param = 'from=';
-
-        $url = $this->client->setFrom(null)->getUrl();
-
-        $this->assertNotContains($param, $url);
+        $this->assertEmpty($this->client->getListingsPath());
     }
 
     public function testItCreatesMultipleJobsWhenMultipleLocationsReturned()
     {
         $loc_count = rand(2,5);
         $jobArray = $this->createJobArray($loc_count);
-
         $array = $this->client->createJobArray($jobArray);
-
         foreach ($array as $key => $job) {
             $this->assertEquals($jobArray['position_title'], $array[0]['position_title']);
             $this->assertEquals($jobArray['locations'][$key], $array[$key]['location']);
@@ -111,9 +52,7 @@ class GovtTest extends \PHPUnit_Framework_TestCase
     {
         $loc_count = 1;
         $jobArray = $this->createJobArray($loc_count);
-
         $array = $this->client->createJobArray($jobArray);
-
         foreach ($array as $key => $job) {
             $this->assertEquals($jobArray['position_title'], $array[0]['position_title']);
             $this->assertEquals($jobArray['locations'][$key], $array[$key]['location']);
@@ -121,51 +60,82 @@ class GovtTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($loc_count, count($array));
     }
 
-    public function testItCanCreateJobObjectFromCleanedPayload()
+    public function testItCanCreateJobObjectFromPayload()
     {
-        $payload = $this->createJobArray(1);
+        $payload = $this->createJobArray();
         $payload['location'] = $payload['locations'][0];
 
         $results = $this->client->createJobObject($payload);
 
+        $this->assertInstanceOf(Job::class, $results);
         $this->assertEquals($payload['id'], $results->sourceId);
         $this->assertEquals($payload['position_title'], $results->title);
         $this->assertEquals($payload['organization_name'], $results->company);
         $this->assertEquals($payload['url'], $results->url);
     }
 
-    public function testItCanSetAllMethodsInReadme()
+    /**
+     * Integration test for the client's getJobs() method.
+     */
+    public function testItCanGetJobs()
     {
-        $attributes = [
-            'keyword' => uniqid(),
-            'organizationIds' => uniqid(),
-            'hl' => rand(0,1),
-            'count' => rand(1,5),
-            'from' => rand(1,5),
-            'tags' => uniqid(),
-            'latLon' => uniqid(),
+        $url = 'https://api.usa.gov/jobs/search.json';
+
+        $options = [
+            'query' => uniqid(),
+            'hl' => uniqid(),
+            'size' => uniqid(),
         ];
-        $client = new Govt;
-        // Set all values
-        foreach ($attributes as $key => $val) {
-            $client->{'set'.ucfirst($key)}($val);
-        }
-        // Get all values
-        foreach ($attributes as $key => $val) {
-            $this->assertEquals($val, $client->{'get'.ucfirst($key)}(), "$key was not set or retrieved properly.");
-        }
+
+        $guzzle = m::mock('GuzzleHttp\Client');
+
+        $query = new GovtQuery($options);
+
+        $client = new GovtProvider($query);
+
+        $client->setClient($guzzle);
+
+        $response = m::mock('GuzzleHttp\Message\Response');
+
+        $jobObjects = [
+            (object) $this->createJobArray(),
+            (object) $this->createJobArray(),
+            (object) $this->createJobArray(),
+        ];
+
+        $jobs = json_encode($jobObjects);
+
+        $guzzle->shouldReceive('get')
+            ->with($query->getUrl(), [])
+            ->once()
+            ->andReturn($response);
+        $response->shouldReceive('getBody')
+            ->once()
+            ->andReturn($jobs);
+
+        $results = $client->getJobs();
+
+        $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(count($jobObjects), $results);
     }
 
-    public function testItCanRetreiveRealResults()
+    /**
+     * Integration test with actual API call to the provider.
+     */
+    public function testItCanGetJobsFromApi()
     {
         if (!getenv('REAL_CALL')) {
             $this->markTestSkipped('REAL_CALL not set. Real API call will not be made.');
         }
 
-        $client = new Govt;
-
         $keyword = 'engineering';
-        $client->setKeyword($keyword);
+
+        $query = new GovtQuery([
+            'query' => $keyword,
+        ]);
+
+        $client = new GovtProvider($query);
+
         $results = $client->getJobs();
 
         $this->assertInstanceOf('JobApis\Jobs\Client\Collection', $results);
