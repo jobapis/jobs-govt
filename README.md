@@ -20,38 +20,47 @@ composer require jobapis/jobs-govt
 
 ## Usage
 
-Usage is the same as JobApis' Jobs Client, using `\JobApis\Jobs\Client\Provider\Govt`
-as the provider.
+Create a Query object and add all the parameters you'd like via the constructor.
+ 
+```php
+// Add parameters to the query via the constructor
+$query = new JobApis\Jobs\Client\Queries\GovtQuery([
+    'hl' => '1'
+]);
+```
+
+Or via the "set" method. All of the parameters documented in the API's documentation can be added.
 
 ```php
-$client = new JobApis\Jobs\Client\Provider\Govt();
-
-// Search for 200 job listings for 'project manager' in Chicago, IL
-$jobs = $client
-    // API parameters
-    ->setQuery()                    // Attempts to extract as much "signal" as possible from the input text. Handles word variants, so a search on "nursing jobs" will find a job titled "nurse practitioner" and "RN." When parts of the query parameter are used to search against the position title, the results are ordered by relevance. When no query parameter is specified, they are ordered by date with the most recent listed first.
-    ->setOrganizationIds()          // A comma-separated string specifying which federal, state, or local agencies to use as a filter.
-    ->setHl()                       // No highlighting is included by default. Use 'hl=1' to highlight terms in the position title that match terms in the user's search.
-    ->setSize()                     // Specifies how many results are returned (up to 100 at a time).
-    ->setFrom()                     // Specifies the starting record.
-    ->setTags()                     // A comma-separated string specifying the level of government. Current tags are federal, state, county, and city.
-    ->setLatLon()                   // Comma-separated pair denoting the position of the searcher looking for a job. For example, 'lat_lon=37.783333,-122.416667' is the value for San Francisco, CA.
-    // Extra parameters
-    ->setKeyword('project manager') // See "setQuery()" method above
-    ->setCount(100)                 // See "setSize()" method above
-    ->getJobs();
+// Add parameters via the set() method
+$query->set('query', 'engineering');
 ```
 
-The `getJobs` method will return a [Collection](https://github.com/jobapis/jobs-common/blob/master/src/Collection.php) of [Job](https://github.com/jobapis/jobs-common/blob/master/src/Job.php) objects.
+You can even chain them if you'd like.
 
-### Location Queries
-
-Because this API does not support location-based queries, you will need to add the location
-to your setKeyword() method call. For example:
-
+```php
+// Add parameters via the set() method
+$query->set('size', '100')
+    ->set('from', '200');
 ```
-$jobs = $client->setKeyword('project manager in chicago, il')->getJobs();
+
+*Note: The government jobs API doesn't support adding location as a parameter, but their keyword or lat_lon parameters can be used for this purpose.* 
+
+Then inject the query object into the provider.
+
+```php
+// Instantiating an IndeedProvider with a query object
+$client = new JobApis\Jobs\Client\Provider\GovtProvider($query);
 ```
+
+And call the "getJobs" method to retrieve results.
+
+```php
+// Get a Collection of Jobs
+$jobs = $client->getJobs();
+```
+
+This will return a [Collection](https://github.com/jobapis/jobs-common/blob/master/src/Collection.php) of [Job](https://github.com/jobapis/jobs-common/blob/master/src/Job.php) objects.
 
 ## Testing
 
