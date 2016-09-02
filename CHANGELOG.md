@@ -1,7 +1,7 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
-## 1.0.0 - 2016-08-27
+## 1.0.0-beta - 2016-00-02
 
 ### Added
 - Changed namespace and organization to `jobapis`.
@@ -14,7 +14,7 @@ All Notable changes to `jobs-govt` will be documented in this file
 - Nothing
 
 ### Removed
-- Old getters and setters that were not accurately reflected in the API (eg: setLocation)
+- Old getters and setters.
 
 ### Security
 - Nothing
