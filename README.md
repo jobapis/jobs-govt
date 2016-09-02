@@ -49,7 +49,7 @@ $query->set('size', '100')
 Then inject the query object into the provider.
 
 ```php
-// Instantiating an IndeedProvider with a query object
+// Instantiating provider with a query object
 $client = new JobApis\Jobs\Client\Provider\GovtProvider($query);
 ```
 
