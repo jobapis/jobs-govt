@@ -1,6 +1,32 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 1.0.0 - 2016-09-03
+
+### Added
+- Updated package name in composer file.
+
+### Fixed
+- Test namespace.
+
+## 1.0.0-beta - 2016-09-02
+
+### Added
+- Changed namespace and organization to `jobapis`.
+- Support for v2 of jobs-common package.
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Old getters and setters.
+
+### Security
+- Nothing
+
 ## 0.6.0 - 2015-09-28
 
 ### Added
