@@ -60,7 +60,8 @@ class GovtQuery extends AbstractQuery
      */
     public function getBaseUrl()
     {
-        return 'https://api.usa.gov/jobs/search.json';
+        // the previous url is not working i have added the following url and it started working
+        return 'https://jobs.search.gov/jobs/search.json';
     }
 
     /**
