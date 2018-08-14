@@ -13,7 +13,7 @@ class GovtQueryTest extends \PHPUnit_Framework_TestCase
     public function testItCanGetBaseUrl()
     {
         $this->assertEquals(
-            'https://api.usa.gov/jobs/search.json',
+            'https://jobs.search.gov/jobs/search.json',
             $this->query->getBaseUrl()
         );
     }
