@@ -60,7 +60,7 @@ class GovtQuery extends AbstractQuery
      */
     public function getBaseUrl()
     {
-        return 'https://api.usa.gov/jobs/search.json';
+        return 'https://jobs.search.gov/jobs/search.json';
     }
 
     /**
