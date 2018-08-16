@@ -1,6 +1,11 @@
 # Changelog
 All Notable changes to `jobs-govt` will be documented in this file
 
+## 1.0.1 - 2018-08-16
+
+### Fixed
+- Base URL for the Government Jobs API changed
+
 ## 1.0.0 - 2016-09-03
 
 ### Added
